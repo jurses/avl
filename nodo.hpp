@@ -13,6 +13,7 @@ class nodo_t{
 		nodo_t<T>* HI_;
 		nodo_t<T>* HD_;
 		T valor_;
+		int balance_;
 
 	public:
 		nodo_t();
@@ -23,6 +24,7 @@ class nodo_t{
 		void ponHI(nodo_t<T>*);
 		void ponHD(nodo_t<T>*);
 		T& valor(void);
+		int& balance(void);
 };
 
 template<class T>
@@ -30,12 +32,10 @@ nodo_t<T>::nodo_t():
 HI_(NULL),
 HD_(NULL)
 {
-	std::cout << "Creo: " << valor_ << std::endl;
 }
 
 template<class T>
 nodo_t<T>::~nodo_t(){
-	std::cout << "Borro: " << valor_ << std::endl;
 }
 
 template<class T>
@@ -61,6 +61,11 @@ void nodo_t<T>::ponHI(nodo_t<T>* nodo){
 template<class T>
 void nodo_t<T>::ponHD(nodo_t<T>* nodo){
 	HD_ = nodo;
+}
+
+template<class T>
+int& nodo_t<T>::balance(void){
+	return balance_;
 }
 
 #endif	// _NODO_H_
