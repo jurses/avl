@@ -191,9 +191,9 @@ void arbolBin_t<T>::sustituye(nodo_t<T>* &eliminado, nodo_t<T>* &sust, bool &dec
 
 template<class T>
 void arbolBin_t<T>::eliminar_re_bal_I(nodo_t<T>* &nodo, bool& decrece){
+	nodo_t<T>* nodo1 = nodo->obtHD();
 	switch(nodo->balance()){
-		case -1:	nodo_t<T>* nodo1 = nodo->obtHD();
-					if(nodo1->balance() > 0)
+		case -1:	if(nodo1->balance() > 0)
 						rotacion_DI(nodo);
 					else{
 						if(nodo1->balance() == 0)
@@ -210,9 +210,9 @@ void arbolBin_t<T>::eliminar_re_bal_I(nodo_t<T>* &nodo, bool& decrece){
 
 template<class T>
 void arbolBin_t<T>::eliminar_re_bal_D(nodo_t<T>* &nodo, bool& decrece){
+	nodo_t<T>* nodo1 = nodo->obtHI();
 	switch(nodo->balance()){
-		case 1:	nodo_t<T>* nodo1 = nodo->obtHI();
-					if(nodo1->balance() < 0)
+		case 1:		if(nodo1->balance() < 0)
 						rotacion_ID(nodo);
 					else{
 						if(nodo1->balance() == 0)

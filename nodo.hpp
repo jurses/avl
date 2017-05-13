@@ -9,18 +9,18 @@
 
 template<class T>
 class nodo_t{
-	private:
-		nodo_t<T>* HI_;
-		nodo_t<T>* HD_;
+	private:	
 		T valor_;
 		int balance_;
 
 	public:
 		nodo_t();
 		~nodo_t();
+		nodo_t<T>* HI_;
+		nodo_t<T>* HD_;
 
-		nodo_t<T>* obtHI();
-		nodo_t<T>* obtHD();
+		nodo_t<T>*& obtHI();
+		nodo_t<T>*& obtHD();
 		void ponHI(nodo_t<T>*);
 		void ponHD(nodo_t<T>*);
 		T& valor(void);
@@ -44,12 +44,12 @@ T& nodo_t<T>::valor(void){
 }
 
 template<class T>
-nodo_t<T>* nodo_t<T>::obtHI(void){
+nodo_t<T>*& nodo_t<T>::obtHI(void){
 	return HI_;
 }
 
 template<class T>
-nodo_t<T>* nodo_t<T>::obtHD(void){
+nodo_t<T>*& nodo_t<T>::obtHD(void){
 	return HD_;
 }
 
