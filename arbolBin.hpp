@@ -17,18 +17,20 @@ class arbolBin_t{
 	private:
 		nodo_t<T>* raiz_;
 		void insertar(nodo_t<T>*&, nodo_t<T>*&, bool&);
-		void eliminar(T, nodo_t<T>*);
+		void eliminar(nodo_t<T>*&, T, bool&);
+		void eliminar_re_bal_I(nodo_t<T>*&, bool&);
+		void eliminar_re_bal_D(nodo_t<T>*&, bool&);
 		void borrar(nodo_t<T>*);
 		nodo_t<T>* obtMayor(nodo_t<T>*);
 		nodo_t<T>* obtMenor(nodo_t<T>*);
-		void sustituye(nodo_t<T>*, nodo_t<T>*);
-		bool balanceado(nodo_t<T>*);
+		void sustituye(nodo_t<T>*&, nodo_t<T>*&, bool&);
+		const bool balanceado(nodo_t<T>*);
 		void rotacion_II(nodo_t<T>*);
 		void rotacion_ID(nodo_t<T>*);
 		void rotacion_DI(nodo_t<T>*);
 		void rotacion_DD(nodo_t<T>*);
-		void insertar_re_bal_I(nodo_t<T>*);
-		void insertar_re_bal_D(nodo_t<T>*);
+		void insertar_re_bal_I(nodo_t<T>*&, bool&);
+		void insertar_re_bal_D(nodo_t<T>*&, bool&);
 	
 	public:
 		arbolBin_t();
@@ -36,7 +38,7 @@ class arbolBin_t{
 
 		void eliminar(T);
 		void insertar(T);
-		bool balanceado(void);
+		const bool balanceado(void);
 };
 
 template<class T>
@@ -86,23 +88,23 @@ void arbolBin_t<T>::insertar(nodo_t<T>* &nodo, nodo_t<T>* &nuevo, bool& crece){
 	else if(nuevo->valor() < nodo->valor()){
 		insertar(nodo->obtHI(), nuevo, crece);
 		if(crece)
-			insertar_re_bal_I(nodo);
+			insertar_re_bal_I(nodo, crece);
 	}
 	else{
 		insertar(nodo->obtHD(), nuevo, crece);
 		if(crece)
-			insertar_re_bal_D(nodo);
+			insertar_re_bal_D(nodo, crece);
 	}
 }
 
 template<class T>
-void arbolBin_t<T>::insertar_re_bal_I(nodo_t<T>* &nodo){
+void arbolBin_t<T>::insertar_re_bal_I(nodo_t<T>* &nodo, bool& crece){
 	switch(nodo->balance()){
 		case -1:	nodo->balance() = 0;
 					crece = false;
 					break;
 
-		case 0;		nodo->balance() = 1;
+		case 0:		nodo->balance() = 1;
 					break;
 
 		case 1:		nodo_t<T>* nodo1 = nodo->obtHI();
@@ -115,13 +117,13 @@ void arbolBin_t<T>::insertar_re_bal_I(nodo_t<T>* &nodo){
 }
 
 template<class T>
-void arbolBin_t<T>::insertar_re_bal_I(nodo_t<T>* &nodo){
+void arbolBin_t<T>::insertar_re_bal_D(nodo_t<T>* &nodo, bool& crece){
 	switch(nodo->balance()){
 		case 1:	nodo->balance() = 0;
 					crece = false;
 					break;
 
-		case 0;		nodo->balance() = -1;
+		case 0:		nodo->balance() = -1;
 					break;
 
 		case -1:	nodo_t<T>* nodo1 = nodo->obtHD();
@@ -250,7 +252,7 @@ template<class T>
 const bool arbolBin_t<T>::balanceado(nodo_t<T>* nodo){
 	if(!nodo)
 		return true;
-	int balance = altura(nodo->obtHI()) - altura(nodo->obtHD()):
+	int balance = altura(nodo->obtHI()) - altura(nodo->obtHD());
 	switch(balance){
 		case -1:
 		case 0:
