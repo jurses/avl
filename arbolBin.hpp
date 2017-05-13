@@ -25,10 +25,10 @@ class arbolBin_t{
 		nodo_t<T>* obtMenor(nodo_t<T>*);
 		void sustituye(nodo_t<T>*&, nodo_t<T>*&, bool&);
 		const bool balanceado(nodo_t<T>*);
-		void rotacion_II(nodo_t<T>*);
-		void rotacion_ID(nodo_t<T>*);
-		void rotacion_DI(nodo_t<T>*);
-		void rotacion_DD(nodo_t<T>*);
+		void rotacion_II(nodo_t<T>*&);
+		void rotacion_ID(nodo_t<T>*&);
+		void rotacion_DI(nodo_t<T>*&);
+		void rotacion_DD(nodo_t<T>*&);
 		void insertar_re_bal_I(nodo_t<T>*&, bool&);
 		void insertar_re_bal_D(nodo_t<T>*&, bool&);
 	
@@ -117,7 +117,7 @@ void arbolBin_t<T>::insertar_re_bal_I(nodo_t<T>* &nodo, bool& crece){
 }
 
 template<class T>
-void arbolBin_t<T>::insertar_re_bal_D(nodo_t<T>* &nodo, bool& crece){
+void arbolBin_t<T>::insertar_re_bal_D(nodo_t<T>* &nodo, bool& crece){ //al parecer funciona
 	switch(nodo->balance()){
 		case 1:	nodo->balance() = 0;
 					crece = false;
@@ -190,38 +190,37 @@ void arbolBin_t<T>::sustituye(nodo_t<T>* &eliminado, nodo_t<T>* &sust, bool &dec
 }
 
 template<class T>
-void arbolBin_t<T>::eliminar_re_bal_I(nodo_t<T>* &nodo, bool& decrece){
+void arbolBin_t<T>::eliminar_re_bal_I(nodo_t<T>* &nodo, bool& crece){
 	nodo_t<T>* nodo1 = nodo->obtHD();
 	switch(nodo->balance()){
-		case -1:	if(nodo1->balance() > 0)
-						rotacion_DI(nodo);
-					else{
-						if(nodo1->balance() == 0)
-							decrece = false;
-						rotacion_DD(nodo);
-					}
+		case -1:	nodo->balance() = 0;
+					crece = false;
 					break;
-		case 0:		nodo->balance() = -1;
-					decrece = false;
+		case 0:		nodo->balance() = 1;
 					break;
-		case 1:		nodo->balance() = 0;
+		case 1:		nodo_t<T>* nodo1 = nodo->obtHI();
+					if(nodo1->balance() == 1)
+						rotacion_II(nodo);
+					else
+						rotacion_ID(nodo);
+					crece = false;
 	}
 }
 
 template<class T>
-void arbolBin_t<T>::eliminar_re_bal_D(nodo_t<T>* &nodo, bool& decrece){
+void arbolBin_t<T>::eliminar_re_bal_D(nodo_t<T>* &nodo, bool& crece){
 	nodo_t<T>* nodo1 = nodo->obtHI();
 	switch(nodo->balance()){
 		case 1:		if(nodo1->balance() < 0)
 						rotacion_ID(nodo);
 					else{
 						if(nodo1->balance() == 0)
-							decrece = false;
+							crece = false;
 						rotacion_II(nodo);
 					}
 					break;
 		case 0:		nodo->balance() = 1;
-					decrece = false;
+					crece = false;
 					break;
 		case -1:	nodo->balance() = 0;
 	}
@@ -263,10 +262,12 @@ const bool arbolBin_t<T>::balanceado(nodo_t<T>* nodo){
 }
 
 template<class T>
-void arbolBin_t<T>::rotacion_II(nodo_t<T>* nodo){
+void arbolBin_t<T>::rotacion_II(nodo_t<T>* &nodo){
 	nodo_t<T>* nodo1 = nodo->obtHI();
-	nodo->obtHI() = nodo1->obtHD();
-	nodo1->obtHD() = nodo;
+	//nodo->obtHI() = nodo1->obtHD();
+	nodo->ponHI(nodo1->obtHD());
+	//nodo1->obtHD() = nodo;
+	nodo1->ponHD(nodo);
 
 	if(nodo1->balance() == 1){
 		nodo->balance() = 0;
@@ -280,31 +281,37 @@ void arbolBin_t<T>::rotacion_II(nodo_t<T>* nodo){
 }
 
 template<class T>
-void arbolBin_t<T>::rotacion_DD(nodo_t<T>* nodo){
+void arbolBin_t<T>::rotacion_DD(nodo_t<T>* &nodo){ //funciona
 	nodo_t<T>* nodo1 = nodo->obtHD();
-	nodo->obtHD() = nodo1->obtHI();
-	nodo1->obtHI() = nodo;
+	//nodo->obtHD() = nodo1->obtHI();
+	nodo->ponHD(nodo1->obtHI());
+	//nodo1->obtHI() = nodo;
+	nodo1->ponHI(nodo);
 
-	if(nodo1->balance() == 1){
+	if(nodo1->balance() == -1){
 		nodo->balance() = 0;
 		nodo1->balance() = 0;
 	}
 	else{
-		nodo->balance() = 1;
-		nodo1->balance() = -1;
+		nodo->balance() = -1;
+		nodo1->balance() = 1;
 	}
 	nodo = nodo1;
 }
 
 template<class T>
-void arbolBin_t<T>::rotacion_ID(nodo_t<T>* nodo){
+void arbolBin_t<T>::rotacion_ID(nodo_t<T>* &nodo){
 	nodo_t<T>* nodo1 = nodo->obtHI();
 	nodo_t<T>* nodo2 = nodo->obtHD();
 
-	nodo->obtHI() = nodo2->obtHD();
-	nodo2->obtHD() = nodo;
-	nodo1->obtHD() = nodo2->obtHI();
-	nodo2->obtHI() = nodo1;
+	//nodo->obtHI() = nodo2->obtHD();
+	nodo->ponHI(nodo2->obtHD());
+	//nodo2->obtHD() = nodo;
+	nodo->ponHD(nodo);
+	//nodo1->obtHD() = nodo2->obtHI();
+	nodo1->ponHD(nodo2->obtHI());
+	//nodo2->obtHI() = nodo1;
+	nodo2->ponHI(nodo1);
 
 	if(nodo2->balance() == -1)
 		nodo1->balance() = 1;
@@ -321,14 +328,18 @@ void arbolBin_t<T>::rotacion_ID(nodo_t<T>* nodo){
 }
 
 template<class T>
-void arbolBin_t<T>::rotacion_DI(nodo_t<T>* nodo){
+void arbolBin_t<T>::rotacion_DI(nodo_t<T>* &nodo){//falla
 	nodo_t<T>* nodo1 = nodo->obtHD();
 	nodo_t<T>* nodo2 = nodo->obtHI();
 
-	nodo->obtHD() = nodo2->obtHI();
-	nodo2->obtHI() = nodo;
-	nodo1->obtHI() = nodo2->obtHD();
-	nodo2->obtHD() = nodo1;
+	//nodo->obtHD() = nodo2->obtHI();
+	nodo->ponHD(nodo2->obtHI());
+	//nodo2->obtHI() = nodo;
+	nodo2->ponHI(nodo);
+	//nodo1->obtHI() = nodo2->obtHD();
+	nodo1->ponHI(nodo2->obtHD());
+	//nodo2->obtHD() = nodo1;
+	nodo2->ponHD(nodo1);
 
 	if(nodo2->balance() == 1)
 		nodo1->balance() = -1;
