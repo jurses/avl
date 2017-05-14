@@ -2,6 +2,7 @@
 #define _NODO_H_
 
 #include <iostream>
+#include "matricula.hpp"
 
 #ifndef NULL
 #define NULL 0x0
@@ -15,6 +16,7 @@ class nodo_t{
 
 	public:
 		nodo_t();
+		nodo_t(const char*);
 		~nodo_t();
 		nodo_t<T>* HI_;
 		nodo_t<T>* HD_;
@@ -29,6 +31,13 @@ class nodo_t{
 
 template<class T>
 nodo_t<T>::nodo_t():
+HI_(NULL),
+HD_(NULL)
+{
+}
+
+template<class T>
+nodo_t<T>::nodo_t(const char* cad):
 HI_(NULL),
 HD_(NULL)
 {

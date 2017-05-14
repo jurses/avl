@@ -3,6 +3,7 @@
 
 #include <queue>
 #include "nodo.hpp"
+#include "matricula.hpp"
 
 #ifndef NULL
 #define NULL 0x0
@@ -37,7 +38,9 @@ class arbolBin_t{
 		~arbolBin_t();
 
 		void eliminar(T);
+		void eliminar(const char*);
 		void insertar(T);
+		void insertar(const char*);
 		const bool balanceado(void);
 };
 
@@ -53,6 +56,11 @@ arbolBin_t<T>::~arbolBin_t(){
 		borrar(raiz_);
 	
 	raiz_ = NULL;
+}
+
+template<class T>
+void arbolBin_t<T>::insertar(const char*){
+	std::cout << "¿Árbol binario con cadenas?, no es muy buena idea, ¿no?" << std::endl;
 }
 
 template<class T>
@@ -139,6 +147,11 @@ template<class T>
 void arbolBin_t<T>::eliminar(T valor){
 	bool decrece = false;
 	eliminar(raiz_, valor, decrece);
+}
+
+template<class T>
+void arbolBin_t<T>::eliminar(const char*){
+	std::cout << "¿Árbol binario con cadenas?, no es muy buena idea, ¿no?" << std::endl;
 }
 
 template<class T>
