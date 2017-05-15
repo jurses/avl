@@ -2,6 +2,7 @@
 #define _ARBOL_B_
 
 #include <queue>
+#include <ostream>
 #include "nodo.hpp"
 #include "matricula.hpp"
 
@@ -16,6 +17,7 @@
 template<class T>
 class arbolBin_t{
 	private:
+		std::queue< nodo_t<T>* > colaBFS;
 		nodo_t<T>* raiz_;
 		void insertar(nodo_t<T>*&, nodo_t<T>*&, bool&);
 		void eliminar(nodo_t<T>*&, T, bool&);
@@ -42,6 +44,7 @@ class arbolBin_t{
 		void insertar(T);
 		void insertar(const char*);
 		const bool balanceado(void);
+		std::ostream& mostrar(std::ostream&);
 };
 
 template<class T>
@@ -366,6 +369,31 @@ void arbolBin_t<T>::rotacion_DI(nodo_t<T>* &nodo){//falla
 	
 	nodo2->balance() = 0;
 	nodo = nodo2;
+}
+
+template<class T>
+std::ostream& arbolBin_t<T>::mostrar(std::ostream& os){
+	colaBFS.push(raiz_);
+	os << *(colaBFS.front()) << std::endl;
+	while(!colaBFS.empty()){
+		if(colaBFS.front()->obtHI()){
+			os << *(colaBFS.front()->obtHI()) << "\t";
+			colaBFS.push(colaBFS.front()->obtHI());
+		}
+		else
+			os << "[.]";
+
+		if(colaBFS.front()->obtHD()){
+			os << *(colaBFS.front()->obtHD()) << "\t";
+			colaBFS.push(colaBFS.front()->obtHD());
+		}
+		else
+			os << "[.]";
+
+		os << std::endl;
+		colaBFS.pop();
+	}
+	return os;
 }
 
 #endif	// _ARBOL_B_

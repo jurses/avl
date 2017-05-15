@@ -27,6 +27,9 @@ void lector(const char* nombre, arbolBin_t<T>* arbol){
 				case 'E':	arbol->eliminar(x);
 							std::cout << "A eliminar: " << x << std::endl;
 							break;
+				case 'm':
+				case 'M':	arbol->mostrar(std::cout);
+							break;
 			}
 		}
 		archivo.close();
