@@ -278,11 +278,9 @@ const bool arbolBin_t<T>::balanceado(nodo_t<T>* nodo){
 }
 
 template<class T>
-void arbolBin_t<T>::rotacion_II(nodo_t<T>* &nodo){
+void arbolBin_t<T>::rotacion_II(nodo_t<T>* &nodo){	// al parecer bien
 	nodo_t<T>* nodo1 = nodo->obtHI();
-	//nodo->obtHI() = nodo1->obtHD();
 	nodo->ponHI(nodo1->obtHD());
-	//nodo1->obtHD() = nodo;
 	nodo1->ponHD(nodo);
 
 	if(nodo1->balance() == 1){
@@ -299,9 +297,7 @@ void arbolBin_t<T>::rotacion_II(nodo_t<T>* &nodo){
 template<class T>
 void arbolBin_t<T>::rotacion_DD(nodo_t<T>* &nodo){ //funciona
 	nodo_t<T>* nodo1 = nodo->obtHD();
-	//nodo->obtHD() = nodo1->obtHI();
 	nodo->ponHD(nodo1->obtHI());
-	//nodo1->obtHI() = nodo;
 	nodo1->ponHI(nodo);
 
 	if(nodo1->balance() == -1){
@@ -318,15 +314,11 @@ void arbolBin_t<T>::rotacion_DD(nodo_t<T>* &nodo){ //funciona
 template<class T>
 void arbolBin_t<T>::rotacion_ID(nodo_t<T>* &nodo){
 	nodo_t<T>* nodo1 = nodo->obtHI();
-	nodo_t<T>* nodo2 = nodo->obtHD();
+	nodo_t<T>* nodo2 = nodo1->obtHD();
 
-	//nodo->obtHI() = nodo2->obtHD();
 	nodo->ponHI(nodo2->obtHD());
-	//nodo2->obtHD() = nodo;
-	nodo->ponHD(nodo);
-	//nodo1->obtHD() = nodo2->obtHI();
+	nodo2->ponHD(nodo); // arreglado
 	nodo1->ponHD(nodo2->obtHI());
-	//nodo2->obtHI() = nodo1;
 	nodo2->ponHI(nodo1);
 
 	if(nodo2->balance() == -1)
@@ -374,23 +366,23 @@ void arbolBin_t<T>::rotacion_DI(nodo_t<T>* &nodo){//falla
 template<class T>
 std::ostream& arbolBin_t<T>::mostrar(std::ostream& os){
 	colaBFS.push(raiz_);
-	os << *(colaBFS.front()) << std::endl;
 	while(!colaBFS.empty()){
+		os << "Papá___"  << colaBFS.front()->valor() << std::endl;
 		if(colaBFS.front()->obtHI()){
-			os << *(colaBFS.front()->obtHI()) << "\t";
+			os << colaBFS.front()->obtHI()->valor() << "\t";
 			colaBFS.push(colaBFS.front()->obtHI());
 		}
 		else
 			os << "[.]";
 
 		if(colaBFS.front()->obtHD()){
-			os << *(colaBFS.front()->obtHD()) << "\t";
+			os << colaBFS.front()->obtHD()->valor() << "\t";
 			colaBFS.push(colaBFS.front()->obtHD());
 		}
 		else
 			os << "[.]";
 
-		os << std::endl;
+		os << std::endl << std::endl;
 		colaBFS.pop();
 	}
 	return os;
