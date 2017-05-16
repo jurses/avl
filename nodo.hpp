@@ -12,7 +12,7 @@ template<class T>
 class nodo_t{
 	private:	
 		T valor_;
-		int balance_;
+		int balance_ = 0;
 
 	public:
 		nodo_t();

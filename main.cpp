@@ -51,11 +51,43 @@ void demostracion(arbolBin_t<T>* arbol){
 					std::cout << "Insertar: ";
 					std::cin >> cad_matr;
 					arbol->insertar(cad_matr);
+					std::cout << std::endl;
+					arbol->mostrar(std::cout);
 					break;
 			case 2:	std::cout << "4 números y 3 letras" << std::endl;
 					std::cout << "Eliminar: ";
 					std::cin >> cad_matr;
 					arbol->eliminar(cad_matr);
+					std::cout << std::endl;
+					arbol->mostrar(std::cout);
+					break;
+			default:	std::cout << "Mala opción" << std::endl;
+		}
+	}
+}
+
+template<>
+void demostracion(arbolBin_t<int>* arbol){
+	bool salida = false;
+	int opcion = -1;
+	int valor;
+	while(!salida){
+		std::cout << "0: Salir\n" << "1: Insertar\n" << "2: Eliminar\n" << std::endl;
+		std::cin >> opcion;
+		switch(opcion){
+			case 0:	salida = true;
+					break;
+			case 1:	std::cout << "Insertar: ";
+					std::cin >> valor;
+					arbol->insertar(valor);
+					std::cout << std::endl;
+					arbol->mostrar(std::cout);
+					break;
+			case 2:	std::cout << "Eliminar: ";
+					std::cin >> valor;
+					arbol->eliminar(valor);
+					std::cout << std::endl;
+					arbol->mostrar(std::cout);
 					break;
 			default:	std::cout << "Mala opción" << std::endl;
 		}
@@ -75,7 +107,7 @@ int main(int argc, char** argv){
 			switch(argv[1][1]){
 				case 'f':	lector(argv[2], &arbol);
 							break;
-				case 'd':	demostracion(&arbolmtr);
+				case 'd':	demostracion(&arbol); // arbolmtr
 							break;
 			}
 		}else

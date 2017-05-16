@@ -106,10 +106,12 @@ void arbolBin_t<T>::insertar(nodo_t<T>* &nodo, nodo_t<T>* &nuevo, bool& crece){
 		if(crece)
 			insertar_re_bal_D(nodo, crece);
 	}
+	std::cout << "Balance del nodo = " << nodo->balance() << std::endl;
 }
 
 template<class T>
 void arbolBin_t<T>::insertar_re_bal_I(nodo_t<T>* &nodo, bool& crece){
+	std::cout << "Insertar con rebalanceo a la izquierda" << std::endl;
 	switch(nodo->balance()){
 		case -1:	nodo->balance() = 0;
 					crece = false;
@@ -129,6 +131,7 @@ void arbolBin_t<T>::insertar_re_bal_I(nodo_t<T>* &nodo, bool& crece){
 
 template<class T>
 void arbolBin_t<T>::insertar_re_bal_D(nodo_t<T>* &nodo, bool& crece){ //al parecer funciona
+	std::cout << "Insertar con rebalanceo a la derecha" << std::endl;
 	switch(nodo->balance()){
 		case 1:	nodo->balance() = 0;
 					crece = false;
@@ -199,32 +202,35 @@ void arbolBin_t<T>::sustituye(nodo_t<T>* &eliminado, nodo_t<T>* &sust, bool &dec
 	}
 	else{
 		eliminado->valor() = sust->valor();
-		eliminado = sust;
+		eliminado = sust;	// Cuidado con esto.
 		sust = sust->obtHI();
 		decrece = true;
 	}
 }
 
 template<class T>
-void arbolBin_t<T>::eliminar_re_bal_I(nodo_t<T>* &nodo, bool& crece){
+void arbolBin_t<T>::eliminar_re_bal_I(nodo_t<T>* &nodo, bool& decrece){
+	std::cout << "Eliminar con rebalanceo a la izquierda" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHD();
 	switch(nodo->balance()){
-		case -1:	nodo->balance() = 0;
-					crece = false;
+		case -1:	if(nodo1->balance() > 0)
+						rotacion_DI(nodo);
+					else{
+						if(nodo1->balance() == 0)
+							decrece = false;
+						rotacion_DD(nodo);
+					}
 					break;
-		case 0:		nodo->balance() = 1;
+		case 0:		nodo->balance() = -1;
+					decrece = false;
 					break;
-		case 1:		nodo_t<T>* nodo1 = nodo->obtHI();
-					if(nodo1->balance() == 1)
-						rotacion_II(nodo);
-					else
-						rotacion_ID(nodo);
-					crece = false;
+		case 1:		nodo->balance() = 0;
 	}
 }
 
 template<class T>
 void arbolBin_t<T>::eliminar_re_bal_D(nodo_t<T>* &nodo, bool& crece){
+	std::cout << "Eliminar con rebalanceo a la derecha" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHI();
 	switch(nodo->balance()){
 		case 1:		if(nodo1->balance() < 0)
@@ -279,6 +285,7 @@ const bool arbolBin_t<T>::balanceado(nodo_t<T>* nodo){
 
 template<class T>
 void arbolBin_t<T>::rotacion_II(nodo_t<T>* &nodo){	// al parecer bien
+	std::cout << "Rotación II" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHI();
 	nodo->ponHI(nodo1->obtHD());
 	nodo1->ponHD(nodo);
@@ -296,6 +303,7 @@ void arbolBin_t<T>::rotacion_II(nodo_t<T>* &nodo){	// al parecer bien
 
 template<class T>
 void arbolBin_t<T>::rotacion_DD(nodo_t<T>* &nodo){ //funciona
+	std::cout << "Rotación DD" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHD();
 	nodo->ponHD(nodo1->obtHI());
 	nodo1->ponHI(nodo);
@@ -313,6 +321,7 @@ void arbolBin_t<T>::rotacion_DD(nodo_t<T>* &nodo){ //funciona
 
 template<class T>
 void arbolBin_t<T>::rotacion_ID(nodo_t<T>* &nodo){
+	std::cout << "Rotación ID" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHI();
 	nodo_t<T>* nodo2 = nodo1->obtHD();
 
@@ -336,17 +345,14 @@ void arbolBin_t<T>::rotacion_ID(nodo_t<T>* &nodo){
 }
 
 template<class T>
-void arbolBin_t<T>::rotacion_DI(nodo_t<T>* &nodo){//falla
+void arbolBin_t<T>::rotacion_DI(nodo_t<T>* &nodo){
+	std::cout << "Rotación DI" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHD();
-	nodo_t<T>* nodo2 = nodo->obtHI();
+	nodo_t<T>* nodo2 = nodo1->obtHI();
 
-	//nodo->obtHD() = nodo2->obtHI();
 	nodo->ponHD(nodo2->obtHI());
-	//nodo2->obtHI() = nodo;
 	nodo2->ponHI(nodo);
-	//nodo1->obtHI() = nodo2->obtHD();
 	nodo1->ponHI(nodo2->obtHD());
-	//nodo2->obtHD() = nodo1;
 	nodo2->ponHD(nodo1);
 
 	if(nodo2->balance() == 1)
@@ -364,25 +370,31 @@ void arbolBin_t<T>::rotacion_DI(nodo_t<T>* &nodo){//falla
 }
 
 template<class T>
-std::ostream& arbolBin_t<T>::mostrar(std::ostream& os){
-	colaBFS.push(raiz_);
+std::ostream& arbolBin_t<T>::mostrar(std::ostream& os){ // mala representación por niveles
+	unsigned nivel = 0;
+	if(raiz_)
+		colaBFS.push(raiz_);
 	while(!colaBFS.empty()){
-		os << "Papá___"  << colaBFS.front()->valor() << std::endl;
-		if(colaBFS.front()->obtHI()){
-			os << colaBFS.front()->obtHI()->valor() << "\t";
-			colaBFS.push(colaBFS.front()->obtHI());
-		}
-		else
-			os << "[.]";
+		os << '[' << nivel << "] \t Papá___"  << colaBFS.front()->valor() << std::endl;
+		if(colaBFS.front()->obtHI() || colaBFS.front()->obtHD()){ // Impide que se muestre (.) (.)
+			os << '[' << nivel + 1 << "] \t";
+			if(colaBFS.front()->obtHI()){
+				os << colaBFS.front()->obtHI()->valor() << "\t";
+				colaBFS.push(colaBFS.front()->obtHI());
+			}
+			else
+				os << "(.)";
 
-		if(colaBFS.front()->obtHD()){
-			os << colaBFS.front()->obtHD()->valor() << "\t";
-			colaBFS.push(colaBFS.front()->obtHD());
-		}
-		else
-			os << "[.]";
+			if(colaBFS.front()->obtHD()){
+				os << colaBFS.front()->obtHD()->valor() << "\t";
+				colaBFS.push(colaBFS.front()->obtHD());
+			}
+			else
+				os << "(.)";
 
-		os << std::endl << std::endl;
+			os << std::endl << std::endl;
+			nivel++;
+		}
 		colaBFS.pop();
 	}
 	return os;
