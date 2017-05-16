@@ -3,6 +3,7 @@
 
 #include <queue>
 #include <ostream>
+#include <vector>
 #include "nodo.hpp"
 #include "matricula.hpp"
 
@@ -13,11 +14,11 @@
 #define IZQ 1
 #define DER 0
 
-
 template<class T>
 class arbolBin_t{
 	private:
-		std::queue< nodo_t<T>* > colaBFS;
+		std::queue<nodo_t<T>* > colaBFS;
+		std::queue<int> niveles;
 		nodo_t<T>* raiz_;
 		void insertar(nodo_t<T>*&, nodo_t<T>*&, bool&);
 		void eliminar(nodo_t<T>*&, T, bool&);
@@ -111,7 +112,6 @@ void arbolBin_t<T>::insertar(nodo_t<T>* &nodo, nodo_t<T>* &nuevo, bool& crece){
 
 template<class T>
 void arbolBin_t<T>::insertar_re_bal_I(nodo_t<T>* &nodo, bool& crece){
-	std::cout << "Insertar con rebalanceo a la izquierda" << std::endl;
 	switch(nodo->balance()){
 		case -1:	nodo->balance() = 0;
 					crece = false;
@@ -131,7 +131,6 @@ void arbolBin_t<T>::insertar_re_bal_I(nodo_t<T>* &nodo, bool& crece){
 
 template<class T>
 void arbolBin_t<T>::insertar_re_bal_D(nodo_t<T>* &nodo, bool& crece){ //al parecer funciona
-	std::cout << "Insertar con rebalanceo a la derecha" << std::endl;
 	switch(nodo->balance()){
 		case 1:	nodo->balance() = 0;
 					crece = false;
@@ -210,7 +209,6 @@ void arbolBin_t<T>::sustituye(nodo_t<T>* &eliminado, nodo_t<T>* &sust, bool &dec
 
 template<class T>
 void arbolBin_t<T>::eliminar_re_bal_I(nodo_t<T>* &nodo, bool& decrece){
-	std::cout << "Eliminar con rebalanceo a la izquierda" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHD();
 	switch(nodo->balance()){
 		case -1:	if(nodo1->balance() > 0)
@@ -230,7 +228,6 @@ void arbolBin_t<T>::eliminar_re_bal_I(nodo_t<T>* &nodo, bool& decrece){
 
 template<class T>
 void arbolBin_t<T>::eliminar_re_bal_D(nodo_t<T>* &nodo, bool& crece){
-	std::cout << "Eliminar con rebalanceo a la derecha" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHI();
 	switch(nodo->balance()){
 		case 1:		if(nodo1->balance() < 0)
@@ -285,7 +282,6 @@ const bool arbolBin_t<T>::balanceado(nodo_t<T>* nodo){
 
 template<class T>
 void arbolBin_t<T>::rotacion_II(nodo_t<T>* &nodo){	// al parecer bien
-	std::cout << "Rotación II" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHI();
 	nodo->ponHI(nodo1->obtHD());
 	nodo1->ponHD(nodo);
@@ -303,7 +299,6 @@ void arbolBin_t<T>::rotacion_II(nodo_t<T>* &nodo){	// al parecer bien
 
 template<class T>
 void arbolBin_t<T>::rotacion_DD(nodo_t<T>* &nodo){ //funciona
-	std::cout << "Rotación DD" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHD();
 	nodo->ponHD(nodo1->obtHI());
 	nodo1->ponHI(nodo);
@@ -321,7 +316,6 @@ void arbolBin_t<T>::rotacion_DD(nodo_t<T>* &nodo){ //funciona
 
 template<class T>
 void arbolBin_t<T>::rotacion_ID(nodo_t<T>* &nodo){
-	std::cout << "Rotación ID" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHI();
 	nodo_t<T>* nodo2 = nodo1->obtHD();
 
@@ -346,7 +340,6 @@ void arbolBin_t<T>::rotacion_ID(nodo_t<T>* &nodo){
 
 template<class T>
 void arbolBin_t<T>::rotacion_DI(nodo_t<T>* &nodo){
-	std::cout << "Rotación DI" << std::endl;
 	nodo_t<T>* nodo1 = nodo->obtHD();
 	nodo_t<T>* nodo2 = nodo1->obtHI();
 
@@ -371,33 +364,32 @@ void arbolBin_t<T>::rotacion_DI(nodo_t<T>* &nodo){
 
 template<class T>
 std::ostream& arbolBin_t<T>::mostrar(std::ostream& os){ // mala representación por niveles
-	unsigned nivel = 0;
-	if(raiz_)
+	nodo_t<T>* nodo;
+	int nivel, nivel_actual = 0;
+	if(raiz_){
 		colaBFS.push(raiz_);
-	while(!colaBFS.empty()){
-		os << '[' << nivel << "] \t Papá___"  << colaBFS.front()->valor() << std::endl;
-		if(colaBFS.front()->obtHI() || colaBFS.front()->obtHD()){ // Impide que se muestre (.) (.)
-			os << '[' << nivel + 1 << "] \t";
-			if(colaBFS.front()->obtHI()){
-				os << colaBFS.front()->obtHI()->valor() << "\t";
-				colaBFS.push(colaBFS.front()->obtHI());
-			}
-			else
-				os << "(.)";
-
-			if(colaBFS.front()->obtHD()){
-				os << colaBFS.front()->obtHD()->valor() << "\t";
-				colaBFS.push(colaBFS.front()->obtHD());
-			}
-			else
-				os << "(.)";
-
-			os << std::endl << std::endl;
-			nivel++;
-		}
-		colaBFS.pop();
+		niveles.push(0);
 	}
-	return os;
+
+	while(!colaBFS.empty()){
+		nodo = colaBFS.front();
+		nivel = niveles.front();
+
+		colaBFS.pop();
+		niveles.pop();
+
+		if(nivel > nivel_actual)
+			nivel_actual = nivel;
+		
+		if(nodo){
+			os << nivel_actual << ":  " << nodo->valor() << std::endl;
+				
+			colaBFS.push(nodo->obtHI());
+			niveles.push(nivel + 1);
+			colaBFS.push(nodo->obtHD());
+			niveles.push(nivel + 1);
+		}
+	}
 }
 
 #endif	// _ARBOL_B_
