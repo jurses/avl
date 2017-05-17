@@ -48,6 +48,7 @@ class arbolBin_t{
 		void insertar(void);
 		const bool balanceado(void);
 		nodo_t<T>* buscar(T);
+		nodo_t<T>* obtRaiz(void){ return raiz_; }
 		std::ostream& mostrar(std::ostream&);
 };
 
