@@ -24,6 +24,7 @@ class arbolBin_t{
 		void eliminar(nodo_t<T>*&, T, bool&);
 		void eliminar_re_bal_I(nodo_t<T>*&, bool&);
 		void eliminar_re_bal_D(nodo_t<T>*&, bool&);
+		nodo_t<T>* buscar(nodo_t<T>*, T);
 		void borrar(nodo_t<T>*);
 		nodo_t<T>* obtMayor(nodo_t<T>*);
 		nodo_t<T>* obtMenor(nodo_t<T>*);
@@ -46,6 +47,7 @@ class arbolBin_t{
 		void insertar(const char*);
 		void insertar(void);
 		const bool balanceado(void);
+		nodo_t<T>* buscar(T);
 		std::ostream& mostrar(std::ostream&);
 };
 
@@ -399,6 +401,24 @@ std::ostream& arbolBin_t<T>::mostrar(std::ostream& os){ // mala representación 
 		    os << "(.)";
 	}
 	os << std::endl;
+}
+
+template<class T>
+nodo_t<T>* arbolBin_t<T>::buscar(T valor){
+	if(raiz_)
+		return buscar(raiz_, valor);
+}
+
+template<class T>
+nodo_t<T>* arbolBin_t<T>::buscar(nodo_t<T>* nodo, T valor){
+	if(nodo->valor() > valor){
+		if(nodo->obtHI())
+			buscar(nodo->obtHI(), valor);
+	}else if(nodo->valor() < valor){
+		if(nodo->obtHD())
+			buscar(nodo->obtHD(), valor);
+	}else if(nodo->valor() == valor)
+		return nodo;
 }
 
 #endif	// _ARBOL_B_

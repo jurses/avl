@@ -26,7 +26,7 @@ class matricula_t{
 		operator std::string();
 		int obtCompar(void);
 		void reset(void);
-		void swap(matricula_t&);
+		void matrAle(void);
 };
 
 #endif	// _MATRICULA_H_

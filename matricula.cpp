@@ -63,8 +63,12 @@ void matricula_t::reset(void){
 	nCompar_ = 0;
 }
 
-void matricula_t::swap(matricula_t& matricula){
-	int aux = matricula.nCompar_;
-	matricula.nCompar_ = nCompar_;
-	nCompar_ = aux;
+void matricula_t::matrAle(void){
+	nCompar_ = 0;
+	matr_cadena_.resize(7);
+	for(int i=0; i<4; i++)
+		matr_cadena_[i] = rand()%10 + '0';
+
+	for(int i=4; i<7; i++)
+		matr_cadena_[i] = rand()%26 + MCAR;
 }

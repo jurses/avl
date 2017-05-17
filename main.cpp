@@ -5,6 +5,7 @@
 #include <fstream>
 #include <set>
 #include "matricula.hpp"
+#include "randvec.hpp"
 
 template<class T>
 void lector(const char* nombre, arbolBin_t<T>* arbol){
@@ -39,13 +40,14 @@ void lector(const char* nombre, arbolBin_t<T>* arbol){
 }
 
 void estadista(arbolBin_t<matricula_t>* arbol, int tam){
-	srand(time(NULL));
-	std::vector<matricula_t> matvec;
-	matvec.resize(tam);
-	std::set<matricula_t> matset;
-	for(int i=0; i<tam; i++){
-		matset.insert(matricula_t);
-	}
+	randVec<matricula_t> paraI(tam);
+	randVec<matricula_t> paraB(tam);
+	
+	for(int i=0; i<tam; i++)
+		arbol->insertar(paraI[i]);
+
+	for(int i=0; i<tam; i++)
+		arbol->buscar(paraB[i]);
 }
 
 template<class T>
