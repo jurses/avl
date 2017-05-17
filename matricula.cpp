@@ -62,3 +62,9 @@ int matricula_t::obtCompar(void){
 void matricula_t::reset(void){
 	nCompar_ = 0;
 }
+
+void matricula_t::swap(matricula_t& matricula){
+	int aux = matricula.nCompar_;
+	matricula.nCompar_ = nCompar_;
+	nCompar_ = aux;
+}

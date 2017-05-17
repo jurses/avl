@@ -1,7 +1,9 @@
 #include <iostream>
+#include <cstdlib>
 #include "arbolBin.hpp"
 #include "nodo.hpp"
 #include <fstream>
+#include <set>
 #include "matricula.hpp"
 
 template<class T>
@@ -33,6 +35,16 @@ void lector(const char* nombre, arbolBin_t<T>* arbol){
 			}
 		}
 		archivo.close();
+	}
+}
+
+void estadista(arbolBin_t<matricula_t>* arbol, int tam){
+	srand(time(NULL));
+	std::vector<matricula_t> matvec;
+	matvec.resize(tam);
+	std::set<matricula_t> matset;
+	for(int i=0; i<tam; i++){
+		matset.insert(matricula_t);
 	}
 }
 
@@ -108,6 +120,12 @@ int main(int argc, char** argv){
 				case 'f':	lector(argv[2], &arbol);
 							break;
 				case 'd':	demostracion(&arbol); // arbolmtr
+							break;
+
+				case 'e':	if(argv[2]){
+								int tam = atoi(argv[2]);
+								estadista(&arbolmtr, tam);
+							}
 							break;
 			}
 		}else

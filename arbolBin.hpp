@@ -44,6 +44,7 @@ class arbolBin_t{
 		void eliminar(const char*);
 		void insertar(T);
 		void insertar(const char*);
+		void insertar(void);
 		const bool balanceado(void);
 		std::ostream& mostrar(std::ostream&);
 };
@@ -65,6 +66,10 @@ arbolBin_t<T>::~arbolBin_t(){
 template<class T>
 void arbolBin_t<T>::insertar(const char*){
 	std::cout << "¿Árbol binario con cadenas?, no es muy buena idea, ¿no?" << std::endl;
+}
+
+template<class T>
+void arbolBin_t<T>::insertar(void){
 }
 
 template<class T>
@@ -107,7 +112,6 @@ void arbolBin_t<T>::insertar(nodo_t<T>* &nodo, nodo_t<T>* &nuevo, bool& crece){
 		if(crece)
 			insertar_re_bal_D(nodo, crece);
 	}
-	std::cout << "Balance del nodo = " << nodo->balance() << std::endl;
 }
 
 template<class T>
@@ -369,6 +373,7 @@ std::ostream& arbolBin_t<T>::mostrar(std::ostream& os){ // mala representación 
 	if(raiz_){
 		colaBFS.push(raiz_);
 		niveles.push(0);
+		os << std::endl << "Nivel 0:" << std::endl;
 	}
 
 	while(!colaBFS.empty()){
@@ -378,18 +383,22 @@ std::ostream& arbolBin_t<T>::mostrar(std::ostream& os){ // mala representación 
 		colaBFS.pop();
 		niveles.pop();
 
-		if(nivel > nivel_actual)
-			nivel_actual = nivel;
+		if(nivel > nivel_actual){
+		    nivel_actual = nivel;
+		    os << std::endl << "Nivel: " << nivel_actual << std::endl;
+		}
 		
 		if(nodo){
-			os << nivel_actual << ":  " << nodo->valor() << std::endl;
-				
-			colaBFS.push(nodo->obtHI());
-			niveles.push(nivel + 1);
-			colaBFS.push(nodo->obtHD());
-			niveles.push(nivel + 1);
+		    os << " " << nodo->valor();
+		    colaBFS.push(nodo->obtHI());
+		    niveles.push(nivel + 1);
+		    colaBFS.push(nodo->obtHD());
+		    niveles.push(nivel + 1);
 		}
+		else
+		    os << "(.)";
 	}
+	os << std::endl;
 }
 
 #endif	// _ARBOL_B_
